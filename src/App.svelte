@@ -1,0 +1,110 @@
+<script>
+  import Icon from "@iconify/svelte";
+  import VirtualList from "@sveltejs/svelte-virtual-list";
+  import { onMount } from "svelte";
+  import "./main.css";
+
+  const iconSets = ["ic", "fa-solid"];
+
+  const allSets = import.meta.globEager(
+    "../node_modules/@iconify/json/json/*.json"
+  );
+
+  const getIconJson = (key) => {
+    return allSets[`../node_modules/@iconify/json/json/${key}.json`];
+  };
+
+  let iconJsons = iconSets.map(getIconJson);
+
+  let selectedIconSetPrefix = "";
+  let q = "";
+  let selectedIcon = "";
+  let disabled = false;
+
+  $: allIcons = iconJsons.flatMap((iconSet) =>
+    Object.keys(iconSet.icons).map((key) => ({
+      name: `${iconSet.prefix}:${key}`,
+      iconset: iconSet.prefix,
+    }))
+  );
+
+  $: filteredIconsByIconKey = allIcons
+    .filter(
+      (icon) =>
+        !selectedIconSetPrefix || icon.iconset.includes(selectedIconSetPrefix)
+    )
+    .filter((icon) => !q || icon.name.includes(q));
+
+  onMount(() => {
+    function initCustomElement() {
+      try {
+        window.CustomElement.init((element, context) => {
+          // Setup with initial value and disabled state
+          console.log(element, context);
+          selectedIcon = element.value;
+          
+          // Icon sets array
+          if(element?.config?.iconsets) {
+            iconSets = element.config.iconsets
+          }
+        });
+
+        // React on disabled changed (e.g. when publishing the item)
+        window.CustomElement.onDisabledChanged((_disabled) => {
+          disabled = _disabled;
+        });
+      } catch (err) {
+        // Initialization with Kentico Custom element API failed (page displayed outside of the Kentico UI)
+        console.error(err);
+      }
+    }
+    initCustomElement();
+  });
+</script>
+
+<main class="container mx-auto py-12">
+  <div class="mx-auto mb-6">
+    <label class="mb-3 block">
+      <span class="font-bold">Icon Set:</span>
+      <select bind:value={selectedIconSetPrefix}>
+        <option value="">All</option>
+        {#each iconJsons as iconSet (iconSet.prefix)}
+          <option value={iconSet.prefix}>{iconSet.default.info.name}</option>
+        {/each}
+      </select>
+    </label>
+    <input
+      type="text"
+      class="border rounded-sm px-2 py-3 w-full"
+      placeholder="Search icon"
+      bind:value={q}
+    />
+  </div>
+
+  {#if selectedIcon}
+    <div>Selected icon: <strong>{selectedIcon}</strong></div>
+  {/if}
+
+  <hr class="my-6" />
+
+  <VirtualList
+    height="calc(100vh - 200px)"
+    items={filteredIconsByIconKey}
+    let:item
+  >
+    <button
+      on:click={() => {
+        selectedIcon = item.name;
+        window.CustomElement.setValue(selectedIcon);
+      }}
+      aria-label={item.name}
+      class={`h-12 flex gap-2 items-center ${
+        item.name === selectedIcon ? "bg-green-400/50" : ""
+      }`}
+      disabled={disabled}
+    >
+      <Icon width={48} height={48} icon={item.name} />
+      <span>{item.name}</span>
+    </button>
+  </VirtualList>
+</main>
