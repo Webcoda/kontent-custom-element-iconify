@@ -9,6 +9,7 @@
   );
 
   // States
+  let ref;
   let iconSets = ["ic", "fa-solid"];
   let selectedIconSetPrefix = "";
   let q = "";
@@ -51,6 +52,8 @@
         window.CustomElement.onDisabledChanged((_disabled) => {
           disabled = _disabled;
         });
+        
+        window.CustomElement.setHeight(ref.clientHeight)
       } catch (err) {
         // Initialization with Kentico Custom element API failed (page displayed outside of the Kentico UI)
         console.error(err);
@@ -60,7 +63,7 @@
   });
 </script>
 
-<main class="container mx-auto py-12">
+<main class="container mx-auto py-3" bind:this={ref}>
   <div class="mx-auto mb-6">
     <label class="mb-3 block">
       <span class="font-bold">Icon Set:</span>
@@ -86,7 +89,7 @@
   <hr class="my-6" />
 
   <VirtualList
-    height="calc(100vh - 200px)"
+    height="480px"
     items={filteredIconsByIconKey}
     let:item
   >
