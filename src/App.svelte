@@ -10,26 +10,25 @@
 	let selectedIconSetPrefix = ''
 	let q = ''
 	let selectedIcon = ''
-	let disabled = false;
-  let iconJsons = [];
+	let disabled = false
+	let iconJsons = []
 
-  (async () => {
-    const jsons = await Promise.all(iconSets.map((key) => import(`../node_modules/@iconify/json/json/${key}.json`)))
-    iconJsons = jsons
-  })()  
+	$: (async () => {
+		iconJsons = await Promise.all(iconSets.map((key) => import(`../node_modules/@iconify/json/json/${key}.json`)))
+	})()
 
+	$: allIcons =
+		iconJsons?.flatMap((iconSet) =>
+			Object.keys(iconSet.icons).map((key) => ({
+				name: `${iconSet.prefix}:${key}`,
+				iconset: iconSet.prefix,
+			})),
+		) || []
 
-	$: allIcons = iconJsons?.flatMap((iconSet) =>
-		Object.keys(iconSet.icons).map((key) => ({
-			name: `${iconSet.prefix}:${key}`,
-			iconset: iconSet.prefix,
-		})),
-	) || []
-
-  $: console.log(allIcons)
+	$: console.log(allIcons)
 
 	$: filteredIconsByIconKey = allIcons
-    .filter((icon) => !selectedIconSetPrefix || icon?.iconset.includes(selectedIconSetPrefix))
+		.filter((icon) => !selectedIconSetPrefix || icon?.iconset.includes(selectedIconSetPrefix))
 		.filter((icon) => !q || icon?.name.includes(q))
 
 	onMount(() => {
@@ -77,9 +76,9 @@
 
 	{#if selectedIcon}
 		<div class="flex items-center gap-4 font-bold">
-      <div>Selected icon: </div>
-      <div class="flex items-center gap-2"><Icon icon={selectedIcon} width={36} height={36}></Icon>{selectedIcon}</div>
-    </div>
+			<div>Selected icon:</div>
+			<div class="flex items-center gap-2"><Icon icon={selectedIcon} width={36} height={36} />{selectedIcon}</div>
+		</div>
 	{/if}
 
 	<hr class="my-6" />
