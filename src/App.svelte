@@ -4,22 +4,20 @@
   import { onMount } from "svelte";
   import "./main.css";
 
-  const iconSets = ["ic", "fa-solid"];
-
   const allSets = import.meta.globEager(
     "../node_modules/@iconify/json/json/*.json"
   );
 
-  const getIconJson = (key) => {
-    return allSets[`../node_modules/@iconify/json/json/${key}.json`];
-  };
-
-  let iconJsons = iconSets.map(getIconJson);
-
+  // States
+  let iconSets = ["ic", "fa-solid"];
   let selectedIconSetPrefix = "";
   let q = "";
   let selectedIcon = "";
   let disabled = false;
+
+  $: iconJsons = iconSets.map((key) => {
+    return allSets[`../node_modules/@iconify/json/json/${key}.json`];
+  });
 
   $: allIcons = iconJsons.flatMap((iconSet) =>
     Object.keys(iconSet.icons).map((key) => ({
@@ -42,10 +40,10 @@
           // Setup with initial value and disabled state
           console.log(element, context);
           selectedIcon = element.value;
-          
+
           // Icon sets array
-          if(element?.config?.iconsets) {
-            iconSets = element.config.iconsets
+          if (element?.config?.iconsets) {
+            iconSets = element.config.iconsets;
           }
         });
 
@@ -101,7 +99,7 @@
       class={`h-12 flex gap-2 items-center ${
         item.name === selectedIcon ? "bg-green-400/50" : ""
       }`}
-      disabled={disabled}
+      {disabled}
     >
       <Icon width={48} height={48} icon={item.name} />
       <span>{item.name}</span>
