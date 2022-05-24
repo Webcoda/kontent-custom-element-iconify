@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@iconify/collections@^1.0.107":
+  version "1.0.107"
+  resolved "https://registry.yarnpkg.com/@iconify/collections/-/collections-1.0.107.tgz#ab5fff85105278f924d6aaad26b929f7c2c87590"
+  integrity sha512-ARpD95ci89bWGF+vcOQD0TXh1eQt1iTclur4oy3RQ2UZ5Hy92XmUjaPPKwTaFISC8StkN11wFld4ehnGry/r8g==
+  dependencies:
+    "@iconify/types" "^[object Promise]"
+
 "@iconify/json@^2.1.48":
   version "2.1.48"
   resolved "https://registry.yarnpkg.com/@iconify/json/-/json-2.1.48.tgz#03c38e649d78080c8620095d13073ca8e192be14"
@@ -15,7 +22,7 @@
   resolved "https://registry.yarnpkg.com/@iconify/svelte/-/svelte-2.2.1.tgz#3515bd97577a6ac9fa2e78f4f7a9574d6d37841c"
   integrity sha512-eWZq8CRrr3WfnKAj8SWknfE3S/d+j/AzEcypeJaHurS1s4zTdFnkjATcFa8lerGtcX0PAtXiVL94tbIEd69N+w==
 
-"@iconify/types@^1.1.0":
+"@iconify/types@^1.1.0", "@iconify/types@^[object Promise]":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@iconify/types/-/types-1.1.0.tgz#dc15fc988b1b3fd558dd140a24ede7e0aac11280"
   integrity sha512-Jh0llaK2LRXQoYsorIH8maClebsnzTcve+7U3rQUSnC11X4jtPnFuyatqFLvMxZ8MLG8dB4zfHsbPfuvxluONw==

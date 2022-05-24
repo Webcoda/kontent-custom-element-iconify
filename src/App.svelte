@@ -4,30 +4,33 @@
 	import { onMount } from 'svelte'
 	import './main.css'
 
-	const allSets = import.meta.globEager('../node_modules/@iconify/json/json/*.json')
-
 	// States
 	let ref
 	let iconSets = ['ic', 'fa-solid']
 	let selectedIconSetPrefix = ''
 	let q = ''
 	let selectedIcon = ''
-	let disabled = false
+	let disabled = false;
+  let iconJsons = [];
 
-	$: iconJsons = iconSets.map((key) => {
-		return allSets[`../node_modules/@iconify/json/json/${key}.json`]
-	})
+  (async () => {
+    const jsons = await Promise.all(iconSets.map((key) => import(`../node_modules/@iconify/json/json/${key}.json`)))
+    iconJsons = jsons
+  })()  
 
-	$: allIcons = iconJsons.flatMap((iconSet) =>
+
+	$: allIcons = iconJsons?.flatMap((iconSet) =>
 		Object.keys(iconSet.icons).map((key) => ({
 			name: `${iconSet.prefix}:${key}`,
 			iconset: iconSet.prefix,
 		})),
-	)
+	) || []
+
+  $: console.log(allIcons)
 
 	$: filteredIconsByIconKey = allIcons
-		.filter((icon) => !selectedIconSetPrefix || icon.iconset.includes(selectedIconSetPrefix))
-		.filter((icon) => !q || icon.name.includes(q))
+    .filter((icon) => !selectedIconSetPrefix || icon?.iconset.includes(selectedIconSetPrefix))
+		.filter((icon) => !q || icon?.name.includes(q))
 
 	onMount(() => {
 		function initCustomElement() {
